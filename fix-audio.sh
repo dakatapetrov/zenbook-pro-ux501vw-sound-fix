@@ -9,29 +9,24 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-pulseaudio --check &>/dev/null
-[ $? -eq 0 ] && WAS_PULSE_ON=true || WAS_PULSE_ON=false
-
-systemctl --user status pulseaudio.service &>/dev/null
-[ $? -eq 0 ] && WAS_ON_SYSTEMD=true || WAS_ON_SYSTEMD=false
-
-function reconfig {
-    sudo bash -c "cp $1/user_pin_configs /sys/class/sound/hwC0D0/user_pin_configs"
-    sudo bash -c 'echo 1 | tee /sys/class/sound/hwC0D0/reconfig' &>/dev/null
-}
+PATH=$DIR:$PATH
+USER_PIN_PATH=$DIR/user_pin_configs
 
 function stop_pulse {
     if [ "$1" = true ]; then
-        systemctl --user stop pulseaudio.service
-        systemctl --user stop pulseaudio.socket
-
+        systemctl --user stop pulseaudio.s*
     else
-        PULSE_CONFIG=$HOME/.config/pulse/client.conf
-        mv $PULSE_CONFIG $PULSE_CONFIG.backup
-        echo autospawn = no > $PULSE_CONFIG
+        CONFIG_FILE=$HOME/.config/pulse/client.conf
+        BACKUP_FILE=$CONFIG_FILE.ux501vw.backup
+        if [ -f $CONFIG_FILE ]; then
+            mv $CONFIG_FILE $BACKUP_FILE
+        fi
+        echo autospawn = no > $CONFIG_FILE
         pulseaudio --kill
-        rm $PULSE_CONFIG
-        mv $PULSE_CONFIG.backup $PULSE_CONFIG
+        rm $CONFIG_FILE
+        if [ -f $BACKUP_FILE ]; then
+            mv $BACKUP_FILE $CONFIG_FILE
+        fi
     fi
 }
 
@@ -43,10 +38,17 @@ function start_pulse {
     fi
 }
 
+pulseaudio --check &>/dev/null
+[ $? -eq 0 ] && WAS_PULSE_ON=true || WAS_PULSE_ON=false
+
+systemctl --user status pulseaudio.service &>/dev/null
+[ $? -eq 0 ] && WAS_ON_SYSTEMD=true || WAS_ON_SYSTEMD=false
+
+
 if [ "$WAS_PULSE_ON" = true ]; then
     stop_pulse $WAS_ON_SYSTEMD
-    reconfig $DIR
+    sudo bash -c "reconfig.sh $USER_PIN_PATH"
     start_pulse $WAS_ON_SYSTEMD
 else
-    reconfig $DIR
+    sudo bash -c "reconfig.sh $USER_PIN_PATH"
 fi

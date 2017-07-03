@@ -11,5 +11,7 @@ $ ./path-to-script/fix-audio.sh
 ```
 Where `path-to-script` is the location of the cloned repo.
 
+**NOTE:** This will **replace** any custom `user_ping_config`!
+
 ## TODO:
 * Integrate with systemd so the scripts are executed automatically after resume (not as trivial as systemd keeps user and system services separate).

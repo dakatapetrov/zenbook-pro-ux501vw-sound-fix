@@ -1,8 +1,10 @@
 [Unit]
 Description=Resets the user_pin_configs
 After=stop-pulse@%i.service
+Wants=start-pulse@%i.service
 
 [Service]
+Environment=DIR=/home/dakata/dev/prj/zenbook-pro-ux501vw-sound-fix
 ExecStart=/bin/sh ${DIR}/reconfig.sh ${DIR}/user_pin_configs
 User=root
 

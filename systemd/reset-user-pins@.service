@@ -1,0 +1,12 @@
+[Unit]
+Description=Resets the user_pin_configs
+After=stop-pulse@%i.service
+
+[Service]
+ExecStart=/bin/sh ${DIR}/reconfig.sh ${DIR}/user_pin_configs
+User=root
+
+[Install]
+WantedBy=suspend.target
+WantedBy=sleep.target
+WantedBy=hybrid-sleep.target

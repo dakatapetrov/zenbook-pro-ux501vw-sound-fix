@@ -1,0 +1,14 @@
+[Unit]
+Description=Stops the pulseaudio service for the specified user
+After=suspend.target
+After=hybrid-sleep.target
+After=sleep.target
+
+[Service]
+ExecStart=/bin/systemctl --user stop pulseaudio.s*
+User=%i
+
+[Install]
+WantedBy=suspend.target
+WantedBy=sleep.target
+WantedBy=hybrid-sleep.target

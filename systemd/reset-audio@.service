@@ -1,0 +1,18 @@
+[Unit]
+Description=Resets audio
+After=suspend.target
+After=hybrid-sleep.target
+After=sleep.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/runuser -l %i -c 'export DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS}; systemctl --user stop pulseaudio.s*'
+ExecStart=/bin/sh ${DIR}/reconfig.sh ${DIR}/user_pin_configs
+ExecStartPost=/bin/runuser -l %i -c 'export DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS}; systemctl --user start pulseaudio.service'
+User=root
+
+[Install]
+WantedBy=suspend.target
+WantedBy=sleep.target
+WantedBy=hybrid-sleep.target
+

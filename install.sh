@@ -16,15 +16,12 @@ mkdir $TMP_DIR
 cp $SERVICE_DIR/* $TMP_DIR/
 
 
-sed -i "7i\Environment=DIR=$DIR" $TMP_DIR/reset-user-pins@.service
-sed -i "9i\Environment=DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" $TMP_DIR/stop-pulse@.service
-sed -i "6i\Environment=DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" $TMP_DIR/start-pulse@.service
+sed -i "8i\Environment=DIR=$DIR" $TMP_DIR/reset-audio@.service
+sed -i "8i\Environment=DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" $TMP_DIR/reset-audio@.service
 
 sudo cp $TMP_DIR/* $SYSTEMD_SERVICE_PATH
 
 sudo systemctl daemon-reload
-sudo systemctl enable stop-pulse@$USER.service
-sudo systemctl enable reset-user-pins@$USER.service
-sudo systemctl enable start-pulse@$USER.service
+sudo systemctl enable reset-audio@$USER.service
 
 rm -r $TMP_DIR

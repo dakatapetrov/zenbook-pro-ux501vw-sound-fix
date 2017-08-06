@@ -5,13 +5,24 @@ This repository contains scripts aiming to fix the white noise after suspend iss
 The proposed solution automates [this approach](https://askubuntu.com/q/884051).
 
 ## Instructions
-Just clone the repo and run the following after each suspend:
+**NOTE:** This will **replace** any custom `user_ping_config`! If you want to use custom `user_pin_configs` replace the one in the repo.
+
+### Systemd Service
+The best solution is to install a systemd service that is triggered automatically after sleep (suspend).
+
+Just run the install script:
 ```bash
-$ ./path-to-script/fix-audio.sh
+$ ./path-to-repo/install.sh
 ```
-Where `path-to-script` is the location of the cloned repo.
+Where `path-to-repo` is the location of the cloned repo.
 
-**NOTE:** This will **replace** any custom `user_ping_config`!
+**Restart** for best results.
 
-## TODO:
-* Integrate with systemd so the scripts are executed automatically after resume (not as trivial as systemd keeps user and system services separate).
+### Manual Use
+If you don't want to install any systemd services or you don't use systemd you can use the standalone script.
+
+Run the following after each suspend:
+```bash
+$ ./path-to-repo/fix-audio.sh
+```
+Where `path-to-repo` is the location of the cloned repo.
